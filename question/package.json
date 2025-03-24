@@ -1,0 +1,15 @@
+{
+  "name": "question",
+  "version": "1.0.0",
+  "description": "Question microservice",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "mysql2": "^3.3.0",
+    "path": "^0.12.7"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "etl",
+  "version": "1.0.0",
+  "description": "ETL microservice for SUBMITTED_QUESTIONS",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "mysql2": "^3.3.0"
+  }
+}

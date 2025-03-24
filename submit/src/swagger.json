@@ -1,0 +1,33 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Submit Microservice",
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/categories": {
+        "get": {
+          "summary": "Get categories",
+          "responses": {
+            "200": {
+              "description": "List of categories"
+            }
+          }
+        }
+      },
+      "/submit": {
+        "post": {
+          "summary": "Submit a new question",
+          "requestBody": {
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Submitted successfully"
+            }
+          }
+        }
+      }
+    }
+  }
+  

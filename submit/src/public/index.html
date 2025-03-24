@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Submit a New Question</title>
+</head>
+<body>
+  <h1>Submit a New Question</h1>
+
+  <form id="submitForm">
+    <label>Question:</label><br>
+    <input type="text" id="questionInput" required><br><br>
+
+    <label>Answers:</label><br>
+    <div>
+      <input type="radio" name="correctIndex" value="0" checked>
+      <input type="text" id="answer0" placeholder="Answer 1">
+    </div>
+    <div>
+      <input type="radio" name="correctIndex" value="1">
+      <input type="text" id="answer1" placeholder="Answer 2">
+    </div>
+    <div>
+      <input type="radio" name="correctIndex" value="2">
+      <input type="text" id="answer2" placeholder="Answer 3">
+    </div>
+    <div>
+      <input type="radio" name="correctIndex" value="3">
+      <input type="text" id="answer3" placeholder="Answer 4">
+    </div>
+    <br>
+
+    <label>Category:
+      <select id="categorySelect">
+        <option value="">-- Select Category --</option>
+      </select>
+    </label>
+    <br><br>
+    <label>Or new category:
+      <input type="text" id="newCategoryInput">
+    </label>
+    <br><br>
+
+    <button type="button" id="submitBtn">Submit Question</button>
+  </form>
+
+  <script>
+    // 1) Load categories from /categories
+    async function loadCategories() {
+      try {
+        const res = await fetch('/categories');
+        if (!res.ok) throw new Error('Failed to fetch categories');
+        const categories = await res.json();
+        const select = document.getElementById('categorySelect');
+        // Clear old
+        while (select.options.length > 1) {
+          select.remove(1);
+        }
+        // Populate new
+        categories.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        alert('Error loading categories: ' + err.message);
+      }
+    }
+
+    // 2) Submit form
+    async function submitQuestion() {
+      const question = document.getElementById('questionInput').value.trim();
+      const answer0 = document.getElementById('answer0').value.trim();
+      const answer1 = document.getElementById('answer1').value.trim();
+      const answer2 = document.getElementById('answer2').value.trim();
+      const answer3 = document.getElementById('answer3').value.trim();
+      const correctIndex = document.querySelector('input[name="correctIndex"]:checked').value;
+      const category = document.getElementById('categorySelect').value;
+      const newCategory = document.getElementById('newCategoryInput').value.trim();
+
+      if (!question || !answer0 || !answer1 || !answer2 || !answer3) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      const body = {
+        question,
+        answers: [answer0, answer1, answer2, answer3],
+        correctIndex: parseInt(correctIndex, 10),
+        category,
+        newCategory
+      };
+
+      try {
+        const res = await fetch('/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert('Error: ' + data.error);
+        } else {
+          alert('Question submitted successfully');
+        }
+      } catch (err) {
+        alert('Failed to submit: ' + err.message);
+      }
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', submitQuestion);
+    window.addEventListener('DOMContentLoaded', loadCategories);
+  </script>
+</body>
+</html>

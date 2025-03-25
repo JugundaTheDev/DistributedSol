@@ -12,3 +12,4 @@ services:
       - RABBIT_QUEUE=SUBMITTED_QUESTIONS
     ports:
       - "3001:3001"
+                                                                                              

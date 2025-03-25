@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=questionsdb
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=apppass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_svc
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  question:
+    build: ./question
+    container_name: question_svc
+    environment:
+      - PORT=3002
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=apppass
+      - MYSQL_DATABASE=questionsdb
+    depends_on:
+      - mysql
+    ports:
+      - "3002:3002"
+
+  etl:
+    build: ./etl
+    container_name: etl_svc
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_QUEUE=SUBMITTED_QUESTIONS
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=apppass
+      - MYSQL_DATABASE=questionsdb
+    depends_on:
+      - rabbitmq
+      - mysql
+
+volumes:
+  mysql_data:

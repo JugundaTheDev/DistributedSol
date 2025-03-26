@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3002;
 const app = express();
 app.use(bodyParser.json());
 
-// Serve static front-end for requesting questions
+// Serve static front-end for requesting questions (if any)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // GET /categories
@@ -23,13 +23,18 @@ app.get('/categories', async (req, res) => {
   }
 });
 
-// GET /question/:category
-// ?count=2 (optional)
+// GET /question/:category?count=2 (optional)
 app.get('/question/:category', async (req, res) => {
-  const category = req.params.category;
+  // Convert category to a consistent format (e.g. lowercase)
+  let category = req.params.category.trim().toLowerCase();
   const count = parseInt(req.query.count || '1', 10);
 
   try {
+    // If user passed 'any', we fetch from all categories
+    if (category === 'any') {
+      category = 'any'; // We'll handle 'any' in getRandomQuestions
+    }
+
     const questions = await getRandomQuestions(category, count);
     return res.json(questions);
   } catch (err) {

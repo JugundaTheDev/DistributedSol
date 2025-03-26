@@ -21,7 +21,7 @@ async function loadCategories() {
   
   async function fetchQuestion() {
     const category = document.getElementById('categorySelect').value;
-    const res = await fetch(`/question/${category}`);
+    const res = await fetch(`http://20.254.65.230:3002/question/${category}`);
     const data = await res.json();
     if (Array.isArray(data) && data.length > 0) {
       displayQuestion(data[0]);

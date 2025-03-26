@@ -10,40 +10,36 @@ async function getCategories() {
 // Return random question(s) from a given category
 async function getRandomQuestions(category, count) {
   const db = await getDB();
-  const catLC = category.toLowerCase(); // handle case-insensitivity
+  const catLC = category.toLowerCase(); // normalize to lowercase
 
-  // If category is "any," ignore category filter
   if (catLC === 'any') {
-    // get all questions
+    // Return random questions from ALL categories
     const [rows] = await db.query('SELECT * FROM questions');
-    if (rows.length === 0) return [];
-    // randomize
+    if (!rows || rows.length === 0) return [];
     shuffleArray(rows);
-    // slice based on requested count
     return rows.slice(0, count).map(formatQuestion);
-
   } else {
-    // case-insensitive match
+    // Case-insensitive matching: convert both stored category and parameter to lowercase
     const [rows] = await db.query(
       'SELECT * FROM questions WHERE LOWER(category) = ?',
       [catLC]
     );
-    if (rows.length === 0) return [];
-    // randomize
+    if (!rows || rows.length === 0) return [];
     shuffleArray(rows);
     return rows.slice(0, count).map(formatQuestion);
   }
 }
 
-// Help to format the questions, randomize answers
+// Helper to format a question, randomize answers
 function formatQuestion(row) {
+  // Parse the answers column (assumes valid JSON string stored in DB)
   const answers = JSON.parse(row.answers);
   shuffleArray(answers);
   return {
     id: row.id,
     question: row.question,
     answers,
-    correctIndex: row.correctIndex, 
+    correctIndex: row.correctIndex, // you may want to hide this from the UI in production
     category: row.category
   };
 }

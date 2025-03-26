@@ -7,8 +7,8 @@ services:
     environment:
       - PORT=3001
       # point to the private IP of question-vm for categories and queue
-      - QUESTION_SERVICE_URL=http://20.254.65.230:3002
-      - RABBIT_HOST=20.254.65.230
+      - QUESTION_SERVICE_URL=10.01.5:3002
+      - RABBIT_HOST=10.01.1.5
       - RABBIT_QUEUE=SUBMITTED_QUESTIONS
     ports:
       - "3001:3001"

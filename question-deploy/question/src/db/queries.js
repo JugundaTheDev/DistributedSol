@@ -7,28 +7,30 @@ async function getCategories() {
   return rows.map(r => r.name);
 }
 
-// Return random question(s) from a given category
 async function getRandomQuestions(category, count) {
   const db = await getDB();
-  const catLC = category.toLowerCase(); // normalize to lowercase
+  // Remove extra whitespace and normalize case
+  const catTrimmed = category.trim();
+  const catLower = catTrimmed.toLowerCase();
 
-  if (catLC === 'any') {
-    // Return random questions from ALL categories
+  if (catLower === 'any') {
+    // Return random questions from all categories
     const [rows] = await db.query('SELECT * FROM questions');
-    if (!rows || rows.length === 0) return [];
+    if (rows.length === 0) return [];
     shuffleArray(rows);
     return rows.slice(0, count).map(formatQuestion);
   } else {
-    // Case-insensitive matching: convert both stored category and parameter to lowercase
+    // Use a case-insensitive and whitespace-trimmed comparison
     const [rows] = await db.query(
-      'SELECT * FROM questions WHERE LOWER(category) = ?',
-      [catLC]
+      'SELECT * FROM questions WHERE LOWER(TRIM(category)) = ?',
+      [catLower]
     );
     if (!rows || rows.length === 0) return [];
     shuffleArray(rows);
     return rows.slice(0, count).map(formatQuestion);
   }
 }
+
 
 // Helper to format a question, randomize answers
 function formatQuestion(row) {

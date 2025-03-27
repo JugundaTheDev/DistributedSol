@@ -7,41 +7,43 @@ async function getCategories() {
   return rows.map(r => r.name);
 }
 
+// Return random question(s) from a given category
 async function getRandomQuestions(category, count) {
   const db = await getDB();
-  // Remove extra whitespace and normalize case
-  const catTrimmed = category.trim();
-  const catLower = catTrimmed.toLowerCase();
+  const catLC = category.toLowerCase(); // handle case-insensitivity
 
-  if (catLower === 'any') {
-    // Return random questions from all categories
+  // If category is "any," ignore category filter
+  if (catLC === 'any') {
+    // get all questions
     const [rows] = await db.query('SELECT * FROM questions');
     if (rows.length === 0) return [];
+    // randomize
     shuffleArray(rows);
+    // slice based on requested count
     return rows.slice(0, count).map(formatQuestion);
+
   } else {
-    // Use a case-insensitive and whitespace-trimmed comparison
+    // case-insensitive match: LOWER(category)=?
     const [rows] = await db.query(
-      'SELECT * FROM questions WHERE LOWER(TRIM(category)) = ?',
-      [catLower]
+      'SELECT * FROM questions WHERE LOWER(category) = ?',
+      [catLC]
     );
-    if (!rows || rows.length === 0) return [];
+    if (rows.length === 0) return [];
+    // randomize
     shuffleArray(rows);
     return rows.slice(0, count).map(formatQuestion);
   }
 }
 
-
 // Helper to format a question, randomize answers
 function formatQuestion(row) {
-  // Parse the answers column (assumes valid JSON string stored in DB)
   const answers = JSON.parse(row.answers);
   shuffleArray(answers);
   return {
     id: row.id,
     question: row.question,
     answers,
-    correctIndex: row.correctIndex, // you may want to hide this from the UI in production
+    correctIndex: row.correctIndex, // hide this in final UI if needed
     category: row.category
   };
 }

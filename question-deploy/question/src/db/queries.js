@@ -37,13 +37,24 @@ async function getRandomQuestions(category, count) {
 
 // Helper to format a question, randomize answers
 function formatQuestion(row) {
-  const answers = JSON.parse(row.answers);
+  let answers;
+  if (typeof row.answers === 'string') {
+    // If it's a string, parse it
+    try {
+      answers = JSON.parse(row.answers);
+    } catch (e) {
+      console.error('Error parsing answers JSON:', e);
+      answers = [];
+    }
+  } else {
+    answers = row.answers;
+  }
   shuffleArray(answers);
   return {
     id: row.id,
     question: row.question,
     answers,
-    correctIndex: row.correctIndex, // hide this in final UI if needed
+    correctIndex: row.correctIndex,
     category: row.category
   };
 }

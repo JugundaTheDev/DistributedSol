@@ -13,7 +13,7 @@ services:
     container_name: question_svc
     environment:
       - PORT=3002
-      # External Azure MySQL Flexible Server 
+      # Update MYSQL_HOST to point to your external Azure MySQL Flexible Server FQDN
       - MYSQL_HOST=myquestionsdbserver.mysql.database.azure.com
       - MYSQL_PORT=3306
       - MYSQL_USER=myadmin@myquestionsdbserver
@@ -30,15 +30,13 @@ services:
     environment:
       - RABBIT_HOST=rabbitmq_svc
       - RABBIT_QUEUE=SUBMITTED_QUESTIONS
-      # External DB connection details
       - MYSQL_HOST=myquestionsdbserver.mysql.database.azure.com
       - MYSQL_PORT=3306
       - MYSQL_USER=myadmin@myquestionsdbserver
-      - MYSQL_PASSWORD=Chocostrawberry1
+      - MYSQL_PASSWORD=Chocostrawberry1!
       - MYSQL_DATABASE=questionsdb
     depends_on:
       - rabbitmq
-
 
 volumes:
   mysql_data:

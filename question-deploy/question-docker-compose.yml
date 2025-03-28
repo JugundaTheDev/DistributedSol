@@ -16,7 +16,7 @@ services:
       # Update MYSQL_HOST to point to your external Azure MySQL Flexible Server FQDN
       - MYSQL_HOST=myquestionsdbserver.mysql.database.azure.com
       - MYSQL_PORT=3306
-      - MYSQL_USER=myadmin@myquestionsdbserver
+      - MYSQL_USER=myadmin
       - MYSQL_PASSWORD=Chocostrawberry1!
       - MYSQL_DATABASE=questionsdb
     depends_on:
@@ -32,7 +32,7 @@ services:
       - RABBIT_QUEUE=SUBMITTED_QUESTIONS
       - MYSQL_HOST=myquestionsdbserver.mysql.database.azure.com
       - MYSQL_PORT=3306
-      - MYSQL_USER=myadmin@myquestionsdbserver
+      - MYSQL_USER=myadmin
       - MYSQL_PASSWORD=Chocostrawberry1!
       - MYSQL_DATABASE=questionsdb
     depends_on:

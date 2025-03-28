@@ -19,27 +19,51 @@ app.get('/categories', async (req, res) => {
     return res.json(categories);
   } catch (err) {
     console.error('[Question] Error fetching categories:', err);
-    return res.status(500).json({ error: 'Unable to fetch categories' });
+    console.warn('[Question] Returning fallback categories...');
+    // Fallback categories if DB call fails
+    return res.json(["Math", "Science", "History", "Geography"]);
   }
 });
 
-//get function 
+// GET /question/:category
 app.get('/question/:category', async (req, res) => {
-  // Convert category to a consistent format (e.g. lowercase)
   let category = req.params.category.trim().toLowerCase();
   const count = parseInt(req.query.count || '1', 10);
 
   try {
     // If user passed 'any', we fetch from all categories
     if (category === 'any') {
-      category = 'any'; // We'll handle 'any' in getRandomQuestions
+      category = 'any';
     }
 
     const questions = await getRandomQuestions(category, count);
+
+    // If no questions returned, provide fallback question
+    if (!questions || questions.length === 0) {
+      console.warn('[Question] No questions found, returning fallback question...');
+      return res.json([
+        {
+          question: "What is 2+2?",
+          answers: ["4", "3", "5", "6"],
+          correctIndex: 0,
+          category: "Math"
+        }
+      ]);
+    }
+
     return res.json(questions);
   } catch (err) {
     console.error('[Question] Error fetching question:', err);
-    return res.status(500).json({ error: 'Unable to fetch question' });
+    console.warn('[Question] Returning fallback question...');
+    // Fallback single question
+    return res.json([
+      {
+        question: "What is 2+2?",
+        answers: ["4", "3", "5", "6"],
+        correctIndex: 0,
+        category: "Math"
+      }
+    ]);
   }
 });
 

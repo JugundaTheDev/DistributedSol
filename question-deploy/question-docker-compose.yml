@@ -34,7 +34,7 @@ services:
       - MYSQL_HOST=myquestionsdbserver.mysql.database.azure.com
       - MYSQL_PORT=3306
       - MYSQL_USER=myadmin@myquestionsdbserver
-      - MYSQL_PASSWORD=YourStrongPasswordHere
+      - MYSQL_PASSWORD=Chocostrawberry1
       - MYSQL_DATABASE=questionsdb
     depends_on:
       - rabbitmq

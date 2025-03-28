@@ -31,7 +31,7 @@ async function loadCategories() {
     const answer2 = document.getElementById('answer2').value.trim();
     const answer3 = document.getElementById('answer3').value.trim();
   
-    // Check which radio button is checked
+    // Check which button is checked
     const correctIndex = document.querySelector('input[name="correctIndex"]:checked').value;
     const category = document.getElementById('categorySelect').value;
     const newCategory = document.getElementById('newCategoryInput').value.trim();

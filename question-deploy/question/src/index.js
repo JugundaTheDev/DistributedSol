@@ -23,7 +23,7 @@ app.get('/categories', async (req, res) => {
   }
 });
 
-// GET /question/:category?count=2 (optional)
+//get function 
 app.get('/question/:category', async (req, res) => {
   // Convert category to a consistent format (e.g. lowercase)
   let category = req.params.category.trim().toLowerCase();

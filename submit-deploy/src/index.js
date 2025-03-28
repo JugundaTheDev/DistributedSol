@@ -13,7 +13,7 @@ const QUESTION_SERVICE_URL = process.env.QUESTION_SERVICE_URL || 'http://localho
 const RABBIT_HOST = process.env.RABBIT_HOST || 'localhost';
 const RABBIT_QUEUE = process.env.RABBIT_QUEUE || 'SUBMITTED_QUESTIONS';
 
-// Where we cache categories if Question is down
+// Where  categories are cached if Question is down
 const CACHE_FILE = path.join(__dirname, 'categories-cache.json');
 
 const app = express();

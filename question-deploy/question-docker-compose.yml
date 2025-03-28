@@ -1,19 +1,6 @@
 version: "3.8"
 
 services:
-  mysql:
-    image: mysql:8
-    container_name: mysql_db
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=questionsdb
-      - MYSQL_USER=appuser
-      - MYSQL_PASSWORD=apppass
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq_svc
@@ -26,12 +13,14 @@ services:
     container_name: question_svc
     environment:
       - PORT=3002
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=appuser
-      - MYSQL_PASSWORD=apppass
+      # External Azure MySQL Flexible Server 
+      - MYSQL_HOST=myquestionsdbserver.mysql.database.azure.com
+      - MYSQL_PORT=3306
+      - MYSQL_USER=myadmin@myquestionsdbserver
+      - MYSQL_PASSWORD=Chocostrawberry1!
       - MYSQL_DATABASE=questionsdb
     depends_on:
-      - mysql
+      - rabbitmq
     ports:
       - "3002:3002"
 
@@ -39,15 +28,17 @@ services:
     build: ./etl
     container_name: etl_svc
     environment:
-      - RABBIT_HOST=rabbitmq
+      - RABBIT_HOST=rabbitmq_svc
       - RABBIT_QUEUE=SUBMITTED_QUESTIONS
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=appuser
-      - MYSQL_PASSWORD=apppass
+      # External DB connection details
+      - MYSQL_HOST=myquestionsdbserver.mysql.database.azure.com
+      - MYSQL_PORT=3306
+      - MYSQL_USER=myadmin@myquestionsdbserver
+      - MYSQL_PASSWORD=YourStrongPasswordHere
       - MYSQL_DATABASE=questionsdb
     depends_on:
       - rabbitmq
-      - mysql
+
 
 volumes:
   mysql_data:
